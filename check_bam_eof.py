@@ -19,6 +19,7 @@ true_eof = ['1f', '8b', '08', '04', '00', '00', '00', '00', '00', 'ff', '06', '0
 parser = argparse.ArgumentParser()
 parser.add_argument("bams", nargs='*', help="One or more filenames/filepaths of BAMs to check for EOF")
 parser.add_argument("-f", "--bam_list_filename", help="A list of filenames/filepaths of BAMs to check for EOF")
+parser.add_argument("-v", "--verbose", help="Verbose output.", action="store_true")
 # create an optional positional argument for a list of bams; args.bams will be a list
 args = parser.parse_args()
 
@@ -61,5 +62,12 @@ for bam_file in bams:
         continue
     else:
         print "Could not find EOF for: " + bam_file
+        if args.verbose:
+            print bam_tail
+            print "candidate_eof:"
+            print candidate_eof
+            print "true_eof:"
+            print true_eof
+            print "\n\n"
 
 
