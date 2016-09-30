@@ -48,11 +48,19 @@ for bam_file in bams:
 
     tail_bits = []
 
-    #canonical hexdump returns 2-column hex bytes, offset position, and ACSII strings. Only the hex bytes will have len of 2
+    # canonical hexdump returns 2-column hex bytes, offset position, and ACSII strings. Only the hex bytes will have len of 2
     for item in bam_tail_words:
         if len(item) != 2:
+            # fixed bug: Fixed bug: A space in the ascii output can occasionally lead to "|." being interpreted as a byte.
+            # potentially spaces in middle of ascii block could also cause random non-hex-byte chunks to be misinterpreted
+            # fix checks to see if the two characters selected are a valid hex number. Having an ascii space as a false delimiter
+            # followed by a two ascii characters making a valid hex number should be very rare.
             continue
         else:
+            try:
+                int(item,16)
+            except ValueError:
+                continue
             tail_bits.append(item)
 
     candidate_eof = tail_bits[-28:]
